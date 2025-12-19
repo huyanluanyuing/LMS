@@ -16,7 +16,7 @@ const CourseDetail: React.FC = () => {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // --- 新增：创建作业相关的 State ---
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newAssignment, setNewAssignment] = useState({
@@ -45,14 +45,14 @@ const CourseDetail: React.FC = () => {
     fetchData();
   }, [courseId, userId]);
 
-  // --- 新增：处理创建作业逻辑 ---
+  
   const handleCreateAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId || !courseId) return;
 
     setIsCreating(true);
     try {
-      // 格式化日期：datetime-local 出来的格式是 "yyyy-MM-ddThh:mm"，Spring Boot 最好补上秒
+      
       const formattedDate = new Date(newAssignment.dueDate).toISOString(); 
 
       const payload = {
@@ -60,13 +60,13 @@ const CourseDetail: React.FC = () => {
         dueDate: formattedDate
       };
 
-      // 调用后端 API
+      
       const response = await api.post(
         `/assignments?userId=${userId}&courseId=${courseId}`, 
         payload
       );
 
-      // 成功后，更新列表、关闭弹窗、重置表单
+      
       setAssignments([...assignments, response.data]);
       setIsModalOpen(false);
       setNewAssignment({ title: '', description: '', maxScore: 100, dueDate: '' });
@@ -78,13 +78,13 @@ const CourseDetail: React.FC = () => {
     }
   };
 
-  // --- 新增：模拟 AI 辅助生成描述 ---
+  
   const handleAIGenerate = () => {
     if (!newAssignment.title) {
       alert("Please enter a title first!");
       return;
     }
-    // 模拟填充内容
+    
     setNewAssignment(prev => ({
       ...prev,
       description: `[AI Generated]\nBased on the topic "${prev.title}", students should:\n1. Read Chapter 4 of the textbook.\n2. Answer the following discussion questions.\n3. Verify your sources.\n\nGood luck!`
@@ -113,7 +113,7 @@ const CourseDetail: React.FC = () => {
         Back to Dashboard
       </button>
 
-      {/* 课程 Header */}
+      
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-500" />
         <div className="flex justify-between items-start">
@@ -133,7 +133,7 @@ const CourseDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* 老师点击按钮 -> 打开 Modal */}
+          
           {role === 'TEACHER' && (
             <button 
               onClick={() => setIsModalOpen(true)}
@@ -146,7 +146,7 @@ const CourseDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* 作业列表 */}
+      
       <div>
         <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
           Classwork
@@ -177,7 +177,7 @@ const CourseDetail: React.FC = () => {
         )}
       </div>
 
-      {/* --- Create Assignment Modal (新增) --- */}
+      {/*Create Assignment Modal*/}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
@@ -228,7 +228,7 @@ const CourseDetail: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="block text-sm font-medium text-slate-700">Description</label>
-                  {/* AI 按钮 */}
+                  {/* AI  */}
                   <button 
                     type="button"
                     onClick={handleAIGenerate}
