@@ -7,7 +7,7 @@ interface CourseCardProps {
   course: Course;
 }
 
-// 给不同科目分配不同的颜色 (视觉糖果)
+// define subject color mapping
 const getSubjectColor = (subject: string) => {
   const colors: Record<string, string> = {
     Math: 'bg-blue-500',
@@ -16,7 +16,7 @@ const getSubjectColor = (subject: string) => {
     Art: 'bg-purple-500',
     English: 'bg-pink-500'
   };
-  return colors[subject] || 'bg-indigo-500'; // 默认颜色
+  return colors[subject] || 'bg-indigo-500';
 };
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
@@ -25,15 +25,15 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
   return (
     <div 
-      onClick={() => navigate(`/courses/${course.id}`)} // 点击跳转到详情
+      onClick={() => navigate(`/courses/${course.id}`)}
       className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer group"
     >
-      {/* 彩色顶部装饰条 */}
+      {/* Colored top bar */}
       <div className={`h-24 ${colorClass} p-4 flex items-start justify-between relative`}>
         <span className="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-sm">
           {course.subject || 'General'}
         </span>
-        {/* 邀请码显示 (如果是老师可以看到) */}
+        {/* Invite code display (visible to teachers) */}
         {course.inviteCode && (
            <span className="text-white/80 text-xs font-mono tracking-wider">
              CODE: {course.inviteCode}
@@ -41,7 +41,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         )}
       </div>
 
-      {/* 内容区域 */}
+      {/* Content area */}
       <div className="p-5">
         <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
           {course.title}

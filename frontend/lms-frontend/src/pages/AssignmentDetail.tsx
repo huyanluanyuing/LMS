@@ -19,28 +19,28 @@ const AssignmentDetail: React.FC = () => {
   const [mySubmission, setMySubmission] = useState<Submission | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 学生提交用的 State
+  // student answer state
   const [answerContent, setAnswerContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
 
-  // 老师打分用的 State
+  // Teacher grading State
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [gradeInput, setGradeInput] = useState<number>(0);
   const [feedbackInput, setFeedbackInput] = useState('');
 
-  // 1. 初始化数据加载
+  // Initial data loading
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (!assignmentId) return;
 
-        // 获取作业详情
+        // Fetch assignment details
         const assignRes = await api.get<Assignment>(`/assignments/${assignmentId}`);
         setAssignment(assignRes.data);
 
-        // 获取该作业的所有提交 (老师看全班，学生滤自己)
-        // 注意：生产环境学生不应有权访问此接口，原型演示为了方便复用接口
+        // Fetch all submissions for this assignment (teacher sees all, student filters own)
+        // Note: In production, students should not have access to this endpoint; this is for demo purposes only
         const subRes = await api.get<Submission[]>(`/assignments/${assignmentId}/submissions`);
         setSubmissions(subRes.data);
 
@@ -62,7 +62,7 @@ const AssignmentDetail: React.FC = () => {
 
   // --- Actions ---
 
-  // 学生：提交作业
+  // Student: Submit Assignment
   const handleStudentSubmit = async () => {
     if (!assignmentId || !userId) return;
     setSubmitting(true);
@@ -79,26 +79,26 @@ const AssignmentDetail: React.FC = () => {
     }
   };
 
-  // 学生：AI 提示 (Mock)
+  // Student: AI Hint (Mock)
   const handleGetAIHint = () => {
     setAiHint("💡 AI Hint: Try breaking down the problem into smaller steps. For fractions, remember to find the common denominator first!");
   };
 
-  // 老师：点击某个学生进行打分
+  // Teacher: Open grading panel for a student's submission
   const openGradingPanel = (submission: Submission) => {
     setSelectedSubmission(submission);
     setGradeInput(submission.grade || 0);
     setFeedbackInput(submission.feedback || '');
   };
 
-  // 老师：AI 自动批改 (Mock)
+  // Teacher: AI Auto Grade (Mock)
   const handleAutoGrade = () => {
-    // 模拟 AI 分析过程
+    // Simulate AI analysis process
     setFeedbackInput("AI Review: Good effort! The calculation process is clear, but check the final simplification. (Auto-generated)");
     setGradeInput(85);
   };
 
-  // 老师：保存分数
+  // Teacher: Save Grade
   const handleSaveGrade = async () => {
     if (!selectedSubmission) return;
     try {
@@ -107,9 +107,9 @@ const AssignmentDetail: React.FC = () => {
         feedback: feedbackInput
       });
       
-      // 更新本地列表
+      // Update local list
       setSubmissions(prev => prev.map(s => s.id === res.data.id ? res.data : s));
-      setSelectedSubmission(null); // 关闭面板
+      setSelectedSubmission(null); // Close panel
     } catch (error) {
       alert("Failed to save grade");
     }
@@ -140,7 +140,7 @@ const AssignmentDetail: React.FC = () => {
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 左侧：作业详情 (所有人都看得到) */}
+        {/* Left: Assignment Details (Visible to all) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
             <div className="flex justify-between items-start mb-4">
@@ -164,7 +164,7 @@ const AssignmentDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* --- 学生视角：答题区域 --- */}
+          {/* Student View: Answer Area */}
           {role === 'STUDENT' && (
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
               <div className="flex justify-between items-center mb-4">
@@ -189,16 +189,16 @@ const AssignmentDetail: React.FC = () => {
                 )}
               </div>
 
-              {/* 答题框 */}
+              {/* Answer Textarea */}
               <textarea
                 value={answerContent}
                 onChange={(e) => setAnswerContent(e.target.value)}
                 placeholder="Type your answer here..."
-                disabled={mySubmission?.status === 'GRADED'} // 批改后不能改
+                disabled={mySubmission?.status === 'GRADED'} // Cannot edit after grading
                 className="w-full h-40 p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all mb-4 resize-none"
               />
 
-              {/* AI 提示显示区 */}
+              {/* AI Hint Display Area */}
               {aiHint && (
                 <div className="mb-4 p-4 bg-purple-50 border border-purple-100 rounded-xl text-purple-700 text-sm flex gap-3 animate-fadeIn">
                    <Sparkles className="w-5 h-5 flex-shrink-0" />
@@ -206,7 +206,7 @@ const AssignmentDetail: React.FC = () => {
                 </div>
               )}
 
-              {/* 按钮区 */}
+              {/* Button Area */}
               <div className="flex justify-between items-center">
                  <button 
                    type="button"
@@ -231,7 +231,7 @@ const AssignmentDetail: React.FC = () => {
                  </button>
               </div>
 
-              {/* 老师评语显示 */}
+              {/* Teacher Feedback Display */}
               {mySubmission?.feedback && (
                 <div className="mt-6 pt-6 border-t border-slate-100">
                   <h4 className="text-sm font-bold text-gray-700 mb-2">Teacher Feedback:</h4>
@@ -244,7 +244,7 @@ const AssignmentDetail: React.FC = () => {
           )}
         </div>
 
-        {/* --- 老师视角：右侧提交列表 --- */}
+        {/* Teacher View: Right-side Submission List*/}
         {role === 'TEACHER' && (
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden sticky top-24">
@@ -291,7 +291,7 @@ const AssignmentDetail: React.FC = () => {
         )}
       </div>
 
-      {/* --- 老师视角：打分 Modal/Panel --- */}
+      {/* Modal/Panel */}
       {selectedSubmission && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">

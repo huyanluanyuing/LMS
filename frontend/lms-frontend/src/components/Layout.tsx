@@ -11,15 +11,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* 顶部导航栏 */}
+      {/* Top */}
       <nav className="bg-white border-b border-slate-200 sticky top-0 z-10 px-6 py-4 flex justify-between items-center shadow-sm">
-        {/* Logo 区 */}
+        {/* Logo Area */}
         <div className="flex items-center gap-2 text-blue-600">
           <BookOpen className="w-8 h-8" />
           <span className="text-xl font-bold tracking-tight">OpenLMS</span>
         </div>
 
-        {/* 右侧用户信息与退出 */}
+        {/* User Info and Logout */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
             <UserCircle className="w-5 h-5" />
@@ -38,7 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </nav>
 
-      {/* 页面内容容器 */}
+      {/* Content Container */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {children}
       </main>
